@@ -73,4 +73,38 @@ public class ArticleController {
         articleRepository.delete(article);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/search-title")
+    public ResponseEntity<List<Article>> getArticlesByTitle(@RequestParam String searchTerms) {
+        List<Article> articles = articleRepository.findByTitle(searchTerms);
+        if (articles.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(articles);
+    }
+    @GetMapping("content/{content}")
+    public ResponseEntity<List<Article>> getArticlesByContent(@PathVariable String content) {
+        List<Article> articles = articleRepository.findByContentContaining(content);
+        if (articles.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(articles);
+    }
+
+    @GetMapping("/created-after/{date}")
+    public ResponseEntity<List<Article>> getArticlesByCreatedAfter(@PathVariable LocalDateTime date) {
+        List<Article> articles = articleRepository.findByCreatedAtAfter(date);
+        if (articles.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(articles);
+    }
+    @GetMapping("/latest")
+    public ResponseEntity<List<Article>> getLatestArticles() {
+        List<Article> articles = articleRepository.findLastsByCreatedAtDesc();
+        if (articles.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(articles);
+    }
 }
